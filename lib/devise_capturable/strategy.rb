@@ -33,7 +33,7 @@ module Devise
 
             success!(user)
           rescue Exception => e
-            fail!(:capturable_invalid)
+            fail!("Login failed: #{e}")
           end
         end
         
