@@ -45,7 +45,7 @@ describe 'Devise::Capturable' do
     it "should fail if unsuccessful" do
       expect(@user).to receive(:save!).and_raise(Exception)
       expect(@strategy).to_not receive(:success!)
-      expect(@strategy).to receive(:fail!).with(:capturable_invalid)
+      expect(@strategy).to receive(:fail!).with("Login failed: Exception")
       expect { @strategy.authenticate! }.to_not raise_error
     end
     
