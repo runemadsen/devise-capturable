@@ -188,7 +188,7 @@ Finally, I can also provide an optional path to send the Janrain `authorizationC
 
 ```erb
 janrain.events.onCaptureRegistrationSuccess.addHandler(function(result) {
-  afterJanrainLogin(result, '<%= new_admin_session_path %>');
+  afterJanrainLogin(result, '<%= new_admin_session_path %>', "get");
 });
 ```
 

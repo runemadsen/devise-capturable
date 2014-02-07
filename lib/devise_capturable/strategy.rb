@@ -33,7 +33,8 @@ module Devise
 
             success!(user)
           rescue Exception => e
-            fail!("Login failed: #{e}")
+            puts e.inspect
+            fail!("Login failed: #{e.to_s}")
           end
         end
         
