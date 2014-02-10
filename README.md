@@ -40,8 +40,9 @@ Devise.setup do |config|
   config.capturable_server = "https://myapp.janraincapture.com"  
   config.capturable_client_id = "myclientid"
   config.capturable_client_secret = "myclientsecret"
-  # Optional, see below to override config.capturable_redirect_uri
-  # config.capturable_redirect_uri = "http://sample.com"
+  config.capturable_redirect_uri = "http://sample.com" # Optional, see below
+  config.capturable_auto_create_account = false # Optional, see below
+  config.capturable_redirect_if_no_user = "/users/sign_up" # Optional, see below
 end
 ```
 
@@ -178,7 +179,7 @@ To do so, you'll need to write your own `janrainCaptureWidgetOnLoad` function an
     janrain.capture.ui.start();
 
     // afterJanrainLogin is provided by Devise::Capturable to assist with
-    // server-side login
+    // server-side login. It automatically makes a POST request to /users/sign_in if not configured.
     janrain.events.onCaptureLoginSuccess.addHandler(afterJanrainLogin);
     janrain.events.onCaptureRegistrationSuccess.addHandler(afterJanrainLogin);
   };

@@ -2,4 +2,5 @@ en:
   devise:
     failure:
       user:
-        capturable_invalid: "Could not login. Invalid account."
+        capturable_user_missing: "This user does not exist."
+        capturable_user_error: "There was an error signing in."

@@ -22,39 +22,63 @@ describe 'Devise::Capturable' do
     allow(Devise::Capturable::API).to receive(:entity).and_return(ENTITY)
   end
 
-  describe "for an existing user" do
+  describe "if user exists" do
   
-    it "should authenticate" do
+    it "should sign in" do
       expect(User).to receive(:find_with_capturable_params).with(ENTITY["result"]).and_return(@user)
       expect(@user).to receive(:before_capturable_sign_in).with(ENTITY["result"], PARAMS)
       expect(@user).to_not receive(:save!)
       expect(@strategy).to receive(:success!).with(@user)
-      expect { @strategy.authenticate! }.to_not raise_error
+      @strategy.authenticate!
     end
 
   end
     
-  describe 'for a new user' do
+  describe "if user does not exist" do
     
     before(:each) do
       expect(User).to receive(:find_with_capturable_params).and_return(nil)
-      expect(User).to receive(:new).and_return(@user)
-      expect(@user).to receive(:before_capturable_create).with(ENTITY["result"], PARAMS)
+    end
+
+    describe "and capturable_auto_create_account is enabled" do
+
+      before(:each) do
+        Devise.stub(:capturable_auto_create_account).and_return(true)
+        expect(User).to receive(:new).and_return(@user)
+        expect(@user).to receive(:before_capturable_create).with(ENTITY["result"], PARAMS)
+      end
+
+      it "should fail if not saved" do
+        expect(@user).to receive(:save!).and_raise(Exception)
+        expect(@strategy).to_not receive(:success!)
+        expect(@strategy).to receive(:fail!).with(:capturable_user_error)
+        @strategy.authenticate!
+      end
+      
+      it "should succeed if saved" do
+        expect(@user).to receive(:save!).and_return(true)
+        expect(@strategy).to receive(:success!).with(@user)
+        expect(@strategy).to_not receive(:fail!)
+        @strategy.authenticate!
+      end
+
+    end
+
+    describe "and capturable_auto_create_account is disabled" do
+
+      before(:each) do
+        Devise.stub(:capturable_auto_create_account).and_return(false)
+      end
+
+      it "should not call user save" do
+        expect(@user).to_not receive(:save!)
+        expect(@strategy).to_not receive(:success!)
+        expect(@strategy).to receive(:fail!).with(:capturable_user_missing)
+        @strategy.authenticate!
+      end
+
     end
               
-    it "should fail if unsuccessful" do
-      expect(@user).to receive(:save!).and_raise(Exception)
-      expect(@strategy).to_not receive(:success!)
-      expect(@strategy).to receive(:fail!).with("Login failed: Exception")
-      expect { @strategy.authenticate! }.to_not raise_error
-    end
-    
-    it "should succeed if successful" do
-      expect(@user).to receive(:save!).and_return(true)
-      expect(@strategy).to receive(:success!).with(@user)
-      expect(@strategy).to_not receive(:fail!)
-      expect { @strategy.authenticate! }.to_not raise_error
-    end
   end
 
 end

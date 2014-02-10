@@ -28,21 +28,23 @@ module Devise
             # find user with the capturable params
             user = klass.find_with_capturable_params(entity["result"])
 
-            # if the user exists
+            # if the user exists, sign in
             if user
               user.before_capturable_sign_in(entity["result"], params)
-            # if the user does not exist
-            else
+              success!(user)
+            # else if we want to auto create users
+            elsif Devise.capturable_auto_create_account
               user = klass.new
               user.before_capturable_create(entity["result"], params)
               user.save!
+              success!(user)
+            # else fail
+            else
+              fail!(:capturable_user_missing)
             end
-
-            # sign in the user
-            success!(user)
-            
           rescue Exception => e
-            fail!("Login failed: #{e.to_s}")
+            puts "Devise Capturable Error: #{e}"
+            fail!(:capturable_user_error)
           end
         end
         

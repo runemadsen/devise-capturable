@@ -7,8 +7,7 @@ module Devise
 
       include HTTParty
       format :json
-      #debug_output $stderr
-    
+      
       def self.token(code)
         redirect_uri = Devise.capturable_redirect_uri || 'http://stupidsettings.com'
 
