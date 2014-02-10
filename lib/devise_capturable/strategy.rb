@@ -39,6 +39,9 @@ module Devise
               user.save!
               success!(user)
             # else fail
+            elsif Devise.capturable_redirect_if_no_user
+              fail!(:capturable_user_missing)
+              redirect!(Devise.capturable_redirect_if_no_user)
             else
               fail!(:capturable_user_missing)
             end

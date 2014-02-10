@@ -13,7 +13,10 @@ module Devise
   mattr_accessor :capturable_client_secret
   mattr_accessor :capturable_redirect_uri
   mattr_accessor :capturable_auto_create_account
+  mattr_accessor :capturable_redirect_if_no_user
 end
+
+Devise.capturable_auto_create_account = true
 
 I18n.load_path.unshift File.join(File.dirname(__FILE__), *%w[devise_capturable locales en.yml])
 Devise.add_module(:capturable, :strategy => true, :controller => :sessions, :model => 'devise_capturable/model')

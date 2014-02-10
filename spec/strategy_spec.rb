@@ -64,10 +64,28 @@ describe 'Devise::Capturable' do
 
     end
 
-    describe "and capturable_auto_create_account is disabled" do
+    describe "and capturable_redirect_if_no_user is enabled" do
 
       before(:each) do
         Devise.stub(:capturable_auto_create_account).and_return(false)
+        Devise.stub(:capturable_redirect_if_no_user).and_return("/users/sign_up")
+      end
+
+      it "should redirect" do
+        expect(@user).to_not receive(:save!)
+        expect(@strategy).to_not receive(:success!)
+        expect(@strategy).to receive(:fail!).with(:capturable_user_missing)
+        expect(@strategy).to receive(:redirect!).with("/users/sign_up")
+        @strategy.authenticate!
+      end
+
+    end
+
+    describe "and nothing is enabled" do
+
+      before(:each) do
+        Devise.stub(:capturable_auto_create_account).and_return(false)
+        Devise.stub(:capturable_redirect_if_no_user).and_return(false)
       end
 
       it "should not call user save" do
