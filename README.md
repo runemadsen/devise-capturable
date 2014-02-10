@@ -1,6 +1,8 @@
 # Devise::Capturable
 
-`Devise::Capturable` is a gem that makes it possible to use the Janrain Engage user registration widget, while still having a Devise authentication setup with a Rails `User` model.
+`Devise::Capturable` is a gem that makes it possible to use the Janrain Engage user registration widget as a login system, while still having a Devise authentication setup with a Rails `User` model.
+
+It can be used right out of the box with automatic user creation, or can be configured to show a "second step form", to add extra values to your user model on top of Janrain.
 
 In the following I use the name `User` for the Devise user model, but it will work with any Devise-enabled model.
 

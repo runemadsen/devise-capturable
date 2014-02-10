@@ -20,7 +20,7 @@ module Devise
 
             # get an access token from an OAUTH code
             token = Devise::Capturable::API.token(params[:code])
-            fail!(:capturable_invalid) unless token['stat'] == 'ok'
+            fail!(:capturable_user_error) unless token['stat'] == 'ok'
 
             # get the user info form the access token
             entity = Devise::Capturable::API.entity(token['access_token'])
@@ -32,19 +32,28 @@ module Devise
             if user
               user.before_capturable_sign_in(entity["result"], params)
               success!(user)
+            
             # else if we want to auto create users
             elsif Devise.capturable_auto_create_account
               user = klass.new
               user.before_capturable_create(entity["result"], params)
               user.save!
               success!(user)
-            # else fail
+            
+            # else redirect to a custom URL
             elsif Devise.capturable_redirect_if_no_user
+              
+              new_token = Devise::Capturable::API.refresh_token(token['refresh_token'])
+              return fail!(:capturable_user_error) unless new_token['stat'] == 'ok'
+           
               fail!(:capturable_user_missing)
-              redirect!(Devise.capturable_redirect_if_no_user)
+              redirect!(Devise.capturable_redirect_if_no_user, :token => new_token["access_token"])
+
+            # else fail
             else
               fail!(:capturable_user_missing)
             end
+
           rescue Exception => e
             puts "Devise Capturable Error: #{e}"
             fail!(:capturable_user_error)
