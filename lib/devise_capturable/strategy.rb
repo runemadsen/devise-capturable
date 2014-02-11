@@ -45,9 +45,12 @@ module Devise
               
               new_token = Devise::Capturable::API.refresh_token(token['refresh_token'])
               return fail!(:capturable_user_error) unless new_token['stat'] == 'ok'
-           
+              puts "Devise Capturable New Token #{new_token.inspect}"
+              token_string = new_token["access_token"].to_s
+              puts "token is: #{token_string.inspect  }"
+
               fail!(:capturable_user_missing)
-              redirect!(Devise.capturable_redirect_if_no_user, :token => new_token["access_token"])
+              redirect!("#{Devise.capturable_redirect_if_no_user}?token=#{token_string}")
 
             # else fail
             else
