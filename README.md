@@ -145,10 +145,10 @@ end
 
 #### Overriding `find_with_capturable_params`
 
-When a user logs in, Devise will call the Capture API and try to find a user with the email returned by the API. You can change this by overriding the `find_with_capturable_params` instance method in your `User` model. Here's an example where I'm telling Devise to find the user by the `uuid` instead.
+When a user logs in, Devise will call the Capture API and try to find a user with the email returned by the API. You can change this by overriding the `find_with_capturable_params` class method in your `User` model. Here's an example where I'm telling Devise to find the user by the `uuid` instead.
 
 ```ruby
-def find_with_capturable_params(capture_data)
+def self.find_with_capturable_params(capture_data)
 	self.find_by_uuid(capture_data["uuid"])
 end
 ```
