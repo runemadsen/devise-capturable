@@ -4,6 +4,8 @@ module Devise
 
     module Capturable
 
+      attr_accessor :access_token
+
       def self.included(base)
         base.class_eval do
           extend ClassMethods
