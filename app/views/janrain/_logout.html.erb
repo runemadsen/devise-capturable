@@ -6,7 +6,7 @@
     janrain.capture.ui.start();
 
     janrain.events.onCaptureSessionEnded.addHandler(function() {
-      window.location = '<%= federate_logout_path %>';
+      window.location = '<%= user_federate_logout_path %>';
     });
   };
   </script>
