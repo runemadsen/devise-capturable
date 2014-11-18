@@ -1,0 +1,21 @@
+<%
+@resource_name = Devise.mappings.keys[0].to_s if !@resource_name
+%>
+<% if display_logout? @resource_name %>
+  <script>
+  function janrainCaptureWidgetOnLoad() {
+    janrain.settings.capture.flowName = 'signIn';
+    janrain.settings.capture.responseType = 'code';
+    janrain.capture.ui.start();
+
+    janrain.events.onCaptureSessionEnded.addHandler(function() {
+      window.location = "/#{<%=@resource_name%>}/federate_logout";
+    });
+  };
+  </script>
+  <style>
+    #janrainCaptureWidget { display: none; }
+  </style>
+  <script src="//cdn.oreillystatic.com/members/js/widgets/login-widget.min.js" id="janrainCaptureScript"></script>
+  <a href="#" class="signOutLink capture_end_session">Sign Out</a>
+<% end %>
