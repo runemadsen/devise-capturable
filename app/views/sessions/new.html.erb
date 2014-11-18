@@ -34,7 +34,7 @@
     params['code'] = code;
     $.ajax({
       type: 'POST',
-      url: '/users/sign_in',
+      url: '<%= new_session_path(resource_name) %>',
       data: params,
       success: function(results) {
         if(results.access_token) {
